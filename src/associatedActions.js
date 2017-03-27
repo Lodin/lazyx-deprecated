@@ -2,6 +2,7 @@ const symbol = Symbol('associatedActions');
 
 export function associateActions(reducer, actions) {
   reducer[symbol] = Array.isArray(actions) ? actions : [actions];
+  return reducer;
 }
 
 export function hasAssociatedActions(reducer) {
