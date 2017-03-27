@@ -1,0 +1,14 @@
+# IDE
+.idea
+
+# source
+src
+
+# libraries
+node_modules
+
+# testing
+coverage
+
+# logging
+npm-debug.log*

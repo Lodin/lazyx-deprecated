@@ -5,10 +5,11 @@
   "main": "build/index.js",
   "scripts": {
     "build": "babel src --out-dir build",
+    "lint": "eslint src -c .eslintrc",
+    "prepublish": "npm run build",
     "test": "npm run test:watch",
     "test:watch": "npm run test:single -- --watch",
-    "test:single": "cross-env BABEL_ENV=test jest",
-    "lint": "eslint src -c .eslintrc"
+    "test:single": "cross-env BABEL_ENV=test jest"
   },
   "repository": {
     "type": "git",
