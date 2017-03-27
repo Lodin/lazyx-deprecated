@@ -1,0 +1,14 @@
+# IDE
+.idea
+
+# distributive
+build
+
+# libraries
+node_modules
+
+# testing
+coverage
+
+# logging
+npm-debug.log*

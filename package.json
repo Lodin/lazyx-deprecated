@@ -1,0 +1,82 @@
+{
+  "name": "lazyx",
+  "version": "0.1.0",
+  "description": "Predictable state container with Redux API built on top of RxJS",
+  "main": "build/index.js",
+  "scripts": {
+    "build": "babel src --out-dir build",
+    "test": "npm run test:watch",
+    "test:watch": "npm run test:single -- --watch",
+    "test:single": "cross-env BABEL_ENV=test jest",
+    "lint": "eslint src -c .eslintrc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lodin/lazyx.git"
+  },
+  "keywords": [
+    "flux",
+    "reducer",
+    "predictable",
+    "state",
+    "functional",
+    "immutable",
+    "hot",
+    "live",
+    "replay",
+    "elm",
+    "rxjs",
+    "reactive",
+    "redux"
+  ],
+  "author": "Vlad Rindevich <rindevich.vs@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Lodin/lazyx/issues"
+  },
+  "homepage": "https://github.com/Lodin/lazyx#readme",
+  "dependencies": {
+    "lodash.isplainobject": "^4.0.6",
+    "rxjs": "^5.2.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.0",
+    "babel-core": "^6.24.0",
+    "babel-eslint": "^7.2.1",
+    "babel-jest": "^19.0.0",
+    "babel-plugin-transform-class-properties": "^6.23.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.24.0",
+    "babel-plugin-transform-function-bind": "^6.22.0",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "cross-env": "^3.2.4",
+    "eslint": "^3.18.0",
+    "eslint-config-airbnb": "^14.1.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^4.0.0",
+    "eslint-plugin-react": "^6.10.3",
+    "jest": "^19.0.2"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}"
+    ],
+    "coverageReporters": [
+      "html",
+      "text",
+      "lcov"
+    ],
+    "testPathIgnorePatterns": [
+      "<rootDir>[/\\\\](build|docs|node_modules|scripts)[/\\\\]"
+    ],
+    "testRegex": "(/tests/.*|(\\.|/)(test|spec))\\.jsx?$",
+    "testEnvironment": "node",
+    "testURL": "http://localhost",
+    "transform": {
+      "^.+\\.(js|jsx)$": "<rootDir>/node_modules/babel-jest"
+    },
+    "transformIgnorePatterns": [
+      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$"
+    ]
+  }
+}
