@@ -3,7 +3,8 @@
   "extends": "airbnb",
   "env": {
     "browser": true,
-    "jest": true
+    "jest": true,
+    "jasmine": true
   },
   "rules": {
     "comma-dangle": ["error", "never"],
