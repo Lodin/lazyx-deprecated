@@ -1,4 +1,4 @@
-import {associateActions} from '../src/associatedActions';
+import {associateActions} from '../../src/associatedActions';
 
 const INCREASE_COUNTER = 'INCREASE_COUNTER';
 const RESET_COUNTER = 'RESET_COUNTER';

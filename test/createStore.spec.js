@@ -1,7 +1,7 @@
 import {skip} from 'rxjs/operator/skip';
 import createStore from '../src/createStore';
 import combineReducers from '../src/combineReducers';
-import {counter, calculator, letter} from './helpers';
+import {counter, calculator, letter} from './helpers/reducers';
 
 describe('Function "createStore" creates a store', () => {
   let finalReducer;
