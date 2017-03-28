@@ -32,13 +32,13 @@ describe('Function "combineReducers"', () => {
     });
 
     const productData = product();
-    expect(productData).toEqual([jasmine.any(Observable), jasmine.any(Map), jasmine.any(Map)]);
+    expect(productData).toEqual([expect.any(Observable), expect.any(Map), expect.any(Map)]);
 
     const [reducer$, actionCollection, reducerCollection] = productData;
 
     expect(Array.from(reducerCollection.entries())).toEqual([
-      [counter, jasmine.any(Observable)],
-      [calculator, jasmine.any(Observable)]
+      [counter, expect.any(Observable)],
+      [calculator, expect.any(Observable)]
     ]);
 
     let subscriptionCounter = 0;
@@ -108,7 +108,7 @@ describe('Function "combineReducers"', () => {
       calculator: 50
     };
     const productData = product(preloadedState);
-    expect(productData).toEqual([jasmine.any(Observable), jasmine.any(Map), jasmine.any(Map)]);
+    expect(productData).toEqual([expect.any(Observable), expect.any(Map), expect.any(Map)]);
 
     const [reducer$, actionCollection] = productData;
 
@@ -179,7 +179,7 @@ describe('Function "combineReducers"', () => {
     });
 
     const productData = product();
-    expect(productData).toEqual([jasmine.any(Observable), jasmine.any(Map), jasmine.any(Map)]);
+    expect(productData).toEqual([expect.any(Observable), expect.any(Map), expect.any(Map)]);
 
     const [reducer$] = productData;
 
@@ -217,7 +217,7 @@ describe('Function "combineReducers"', () => {
     };
 
     const productData = product(preloadedState);
-    expect(productData).toEqual([jasmine.any(Observable), jasmine.any(Map), jasmine.any(Map)]);
+    expect(productData).toEqual([expect.any(Observable), expect.any(Map), expect.any(Map)]);
 
     const [reducer$] = productData;
 
