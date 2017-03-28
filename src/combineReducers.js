@@ -26,7 +26,9 @@ export default function combineReducers(reducerMap) {
         const actions = getAssociatedActions(reducer);
 
         const actor$ = new Subject();
-        const initialState = preloadedState ? preloadedState[key] : reducer(undefined, {});
+        const initialState = preloadedState && preloadedState[key]
+          ? preloadedState[key]
+          : reducer(undefined, {});
         const reducer$ = Observable::of(initialState)
           ::merge(actor$::map(action => state => reducer(state, action)))
           ::scan((state, handler) => handler(state));

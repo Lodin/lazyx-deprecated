@@ -1,6 +1,6 @@
 import isPlainObject from 'lodash.isplainobject';
-import {merge} from 'rxjs/operator/merge';
-import {scan} from 'rxjs/operator/scan';
+import {Observable} from 'rxjs/Observable';
+import {combineLatest} from 'rxjs/observable/combineLatest';
 
 export default function createStore(reducer, preloadedState, enhancer) {
   if (typeof preloadedState === 'function' && typeof enhancer === 'undefined') {
@@ -23,7 +23,7 @@ export default function createStore(reducer, preloadedState, enhancer) {
   let currentState = preloadedState;
   let [reducer$, actionCollection, reducerCollection] = reducer(currentState);
 
-  const updateCurrentState = state => (currentState = state);
+  const updateCurrentState = state => (currentState = {...currentState, ...state});
 
   let subscription = reducer$.subscribe(updateCurrentState);
 
@@ -46,22 +46,30 @@ export default function createStore(reducer, preloadedState, enhancer) {
       );
     }
 
-    const actor$ = actionCollection.get(action);
-    actor$.next(action);
+    if (actionCollection.has(action.type)) {
+      const actor$ = actionCollection.get(action.type);
+      actor$.next(action);
+    } else {
+      for (const actor$ of new Set(actionCollection.values())) {
+        actor$.next(action);
+      }
+    }
 
     return action;
   }
 
-  function findReducerStream(search) {
+  function getReducerStream(search) {
     return reducerCollection.get(search);
   }
 
-  function addReducer(nextKey, nextReducer) {
+  function addReducer(nextReducer) {
     const [nextReducer$, nextActionMap] = nextReducer(currentState);
 
-    reducer$ = reducer$
-      ::merge(nextReducer$.map(data => state => (state[nextKey] = data)))
-      ::scan((acc, handler) => handler(acc));
+    reducer$ = Observable::combineLatest(
+      reducer$,
+      nextReducer$,
+      (...states) => Object.assign({}, ...states)
+    );
 
     subscription.unsubscribe();
     subscription = reducer$.subscribe(updateCurrentState);
@@ -71,7 +79,9 @@ export default function createStore(reducer, preloadedState, enhancer) {
     }
   }
 
-  function replaceReducer(nextReducer) {
+  function replaceReducer(nextReducer, nextPreloadedState = {}) {
+    currentState = nextPreloadedState;
+
     const [nextReducer$, nextActionCollection, nextReducerCollection] = nextReducer(currentState);
 
     reducer$ = nextReducer$;
@@ -90,7 +100,7 @@ export default function createStore(reducer, preloadedState, enhancer) {
     addReducer,
     dispatch,
     getState,
-    findReducerStream,
+    getReducerStream,
     replaceReducer,
     subscribe
   };

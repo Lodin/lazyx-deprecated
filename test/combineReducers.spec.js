@@ -1,12 +1,11 @@
 import {Observable} from 'rxjs/Observable';
 import combineReducers from '../src/combineReducers';
-import {associateActions} from '../src/associatedActions';
+import {createReducers} from './helpers';
 
 describe('Function "combineReducers"', () => {
   let counter;
   let calculator;
   let counterActions;
-  let calculatorActions;
 
   const startSendingEvents = (actionCollection) => {
     for (const action of counterActions) {
@@ -23,33 +22,7 @@ describe('Function "combineReducers"', () => {
   };
 
   beforeEach(() => {
-    counterActions = ['COUNTER_INCREASE', 'COUNTER_RESET', 'COUNTER_DECREASE'];
-    counter = associateActions((state = 0, action) => {
-      switch (action.type) {
-        case 'COUNTER_INCREASE':
-          return state + 1;
-        case 'COUNTER_RESET':
-          return 0;
-        case 'COUNTER_DECREASE':
-          return state - 1;
-        default:
-          return state;
-      }
-    }, counterActions);
-
-    calculatorActions = ['CALCULATOR_PLUS', 'CALCULATOR_MINUS', 'CALCULATOR_RESET'];
-    calculator = associateActions((state = 0, action) => {
-      switch (action.type) {
-        case 'CALCULATOR_PLUS':
-          return state + action.payload;
-        case 'CALCULATOR_MINUS':
-          return state - action.payload;
-        case 'CALCULATOR_RESET':
-          return 0;
-        default:
-          return state;
-      }
-    }, calculatorActions);
+    [counter, counterActions, calculator] = createReducers();
   });
 
   it('should create a high-level reducer to consume received reducers', (done) => {
@@ -265,6 +238,6 @@ describe('Function "combineReducers"', () => {
   it('should throw an error if the reducer is not a function', () => {
     expect(combineReducers({
       counter: {}
-    })).toThrowError('Expected reducer to be a function.');
+    })).toThrow(/Expected reducer to be a function/);
   });
 });
