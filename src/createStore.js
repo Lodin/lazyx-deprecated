@@ -58,8 +58,12 @@ export default function createStore(reducer, preloadedState, enhancer) {
     return action;
   }
 
-  function getReducerStream(search) {
-    return reducerCollection.get(search);
+  function getReducerStream(wantedReducer) {
+    if (typeof wantedReducer !== 'function') {
+      throw new Error('Expected wanted reducer to be a function.');
+    }
+
+    return reducerCollection.get(wantedReducer);
   }
 
   function addReducer(nextReducer) {

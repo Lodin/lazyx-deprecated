@@ -309,5 +309,11 @@ describe('Function "createStore" creates a store', () => {
       expect(() => store.dispatch({type: null})).not.toThrow();
       expect(() => store.dispatch({type: ''})).not.toThrow();
     });
+
+    it('should throw an error if reducer to search a stream is not a function', () => {
+      const store = createStore(finalReducer);
+      expect(() => store.getReducerStream({}))
+        .toThrow(/Expected wanted reducer to be a function/);
+    });
   });
 });
