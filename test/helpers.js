@@ -1,46 +1,86 @@
 import {associateActions} from '../src/associatedActions';
 
-export function createReducers() {
-  const counterActions = ['COUNTER_INCREASE', 'COUNTER_RESET', 'COUNTER_DECREASE'];
-  const counter = associateActions((state = 0, action) => {
-    switch (action.type) {
-      case 'COUNTER_INCREASE':
-        return state + 1;
-      case 'COUNTER_RESET':
-        return 0;
-      case 'COUNTER_DECREASE':
-        return state - 1;
-      default:
-        return state;
-    }
-  }, counterActions);
+const INCREASE_COUNTER = 'INCREASE_COUNTER';
+const RESET_COUNTER = 'RESET_COUNTER';
+const DESCREASE_COUNTER = 'DESCREASE_COUNTER';
 
-  const calculatorActions = ['CALCULATOR_PLUS', 'CALCULATOR_MINUS', 'CALCULATOR_RESET'];
-  const calculator = associateActions((state = 0, action) => {
-    switch (action.type) {
-      case 'CALCULATOR_PLUS':
-        return state + action.payload;
-      case 'CALCULATOR_MINUS':
-        return state - action.payload;
-      case 'CALCULATOR_RESET':
-        return 0;
-      default:
-        return state;
-    }
-  }, calculatorActions);
+const counterActions = [INCREASE_COUNTER, RESET_COUNTER, DESCREASE_COUNTER];
+const counterReducer = associateActions((state = 0, action) => {
+  switch (action.type) {
+    case INCREASE_COUNTER:
+      return state + 1;
+    case RESET_COUNTER:
+      return 0;
+    case DESCREASE_COUNTER:
+      return state - 1;
+    default:
+      return state;
+  }
+}, counterActions);
 
-  return [counter, counterActions, calculator, calculatorActions];
-}
+const increaseCounter = () => ({type: INCREASE_COUNTER});
+const decreaseCounter = () => ({type: DESCREASE_COUNTER});
+const resetCounter = () => ({type: RESET_COUNTER});
 
-export function createAdditionalReducer() {
-  return associateActions((state = 'foo', action) => {
-    switch (action.type) {
-      case 'LETTER_ADD':
-        return state + action.payload;
-      case 'LETTER_REMOVE':
-        return state.slice(0, -1);
-      default:
-        return state;
-    }
-  }, ['LETTER_ADD', 'LETTER_REMOVE']);
-}
+const PLUS_CALCULATOR = 'PLUS_CALCULATOR';
+const MINUS_CALCULATOR = 'MINUS_CALCULATOR';
+const RESET_CALCULATOR = 'RESET_CALCULATOR';
+
+const calculatorActions = [PLUS_CALCULATOR, MINUS_CALCULATOR, RESET_CALCULATOR];
+const calculatorReducer = associateActions((state = 0, action) => {
+  switch (action.type) {
+    case PLUS_CALCULATOR:
+      return state + action.payload;
+    case MINUS_CALCULATOR:
+      return state - action.payload;
+    case RESET_CALCULATOR:
+      return 0;
+    default:
+      return state;
+  }
+}, calculatorActions);
+
+const plusCalculator = payload => ({type: PLUS_CALCULATOR, payload});
+const minusCalculator = payload => ({type: MINUS_CALCULATOR, payload});
+const resetCalculator = () => ({type: RESET_CALCULATOR});
+
+const ADD_LETTER = 'LETTER_ADD';
+const REMOVE_LETTER = 'LETTER_REMOVE';
+
+const letterActions = [ADD_LETTER, REMOVE_LETTER];
+const letterReducer = associateActions((state = 'foo', action) => {
+  switch (action.type) {
+    case ADD_LETTER:
+      return state + action.payload;
+    case REMOVE_LETTER:
+      return state.slice(0, -1);
+    default:
+      return state;
+  }
+}, letterActions);
+
+const addLetter = payload => ({type: ADD_LETTER, payload});
+const removeLetter = () => ({type: REMOVE_LETTER});
+
+export const counter = {
+  actions: counterActions,
+  reducer: counterReducer,
+  increase: increaseCounter,
+  decrease: decreaseCounter,
+  reset: resetCounter
+};
+
+export const calculator = {
+  actions: calculatorActions,
+  reducer: calculatorReducer,
+  plus: plusCalculator,
+  minus: minusCalculator,
+  reset: resetCalculator
+};
+
+export const letter = {
+  actions: letterActions,
+  reducer: letterReducer,
+  add: addLetter,
+  remove: removeLetter
+};

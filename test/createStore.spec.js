@@ -1,22 +1,19 @@
 import {skip} from 'rxjs/operator/skip';
 import createStore from '../src/createStore';
 import combineReducers from '../src/combineReducers';
-import {createReducers, createAdditionalReducer} from './helpers';
+import {counter, calculator, letter} from './helpers';
 
-describe('Function "createStore" creates a store that', () => {
-  let counter;
-  let calculator;
+describe('Function "createStore" creates a store', () => {
   let finalReducer;
 
   beforeEach(() => {
-    [counter,, calculator] = createReducers();
     finalReducer = combineReducers({
-      counter,
-      calculator
+      counter: counter.reducer,
+      calculator: calculator.reducer
     });
   });
 
-  describe('is simple and', () => {
+  describe('being simple', () => {
     let store;
 
     beforeEach(() => {
@@ -31,14 +28,14 @@ describe('Function "createStore" creates a store that', () => {
     });
 
     it('should dispatch action', () => {
-      store.dispatch({type: 'CALCULATOR_PLUS', payload: 50});
+      store.dispatch(calculator.plus(50));
       expect(store.getState()).toEqual({
         counter: 0,
         calculator: 50
       });
     });
 
-    it('should dispatch an unknown action that should call whole store updating', () => {
+    it('should dispatch an unknown action calling whole store updating', () => {
       let subscriptionCounter = 0;
       const checkState = (state) => {
         expect(state).toEqual(0);
@@ -46,8 +43,8 @@ describe('Function "createStore" creates a store that', () => {
       };
 
       // skipping initial store emitting
-      store.getReducerStream(counter)::skip(1).subscribe(checkState);
-      store.getReducerStream(calculator)::skip(1).subscribe(checkState);
+      store.getReducerStream(counter.reducer)::skip(1).subscribe(checkState);
+      store.getReducerStream(calculator.reducer)::skip(1).subscribe(checkState);
       store.dispatch({type: 'UNKNOWN'});
 
       expect(subscriptionCounter).toEqual(2);
@@ -77,11 +74,11 @@ describe('Function "createStore" creates a store that', () => {
         subscriptionCounter += 1;
       });
 
-      store.dispatch({type: 'CALCULATOR_PLUS', payload: 50});
+      store.dispatch(calculator.plus(50));
     });
 
     it('should be able to get a reducer\'s stream', (done) => {
-      const reducer$ = store.getReducerStream(counter);
+      const reducer$ = store.getReducerStream(counter.reducer);
 
       let subscriptionCounter = 0;
       reducer$.subscribe((state) => {
@@ -100,19 +97,15 @@ describe('Function "createStore" creates a store that', () => {
         subscriptionCounter += 1;
       });
 
-      store.dispatch({type: 'CALCULATOR_PLUS', payload: 50});
-      store.dispatch({type: 'COUNTER_DECREASE'});
+      store.dispatch(calculator.plus(50));
+      store.dispatch(counter.decrease());
     });
 
     describe('manipulating reducers', () => {
-      let letter;
-
-      beforeEach(() => {
-        letter = createAdditionalReducer();
-      });
-
       it('should be able to add a reducer', () => {
-        store.addReducer(combineReducers({letter}));
+        store.addReducer(combineReducers({
+          letter: letter.reducer
+        }));
 
         expect(store.getState()).toEqual({
           counter: 0,
@@ -124,7 +117,7 @@ describe('Function "createStore" creates a store that', () => {
       it('should be able to replace current reducer to a new one', () => {
         const reducer = combineReducers({
           number: finalReducer,
-          letter
+          letter: letter.reducer
         });
 
         store.replaceReducer(reducer);
@@ -162,7 +155,7 @@ describe('Function "createStore" creates a store that', () => {
       const store = createStore(finalReducer, preloadedState);
       expect(store.getState()).toEqual(preloadedState);
 
-      store.dispatch({type: 'COUNTER_INCREASE'});
+      store.dispatch(counter.increase());
       expect(store.getState()).toEqual({
         counter: 11,
         calculator: 50,
@@ -177,13 +170,11 @@ describe('Function "createStore" creates a store that', () => {
         letter: 'bar'
       };
 
-      const letter = createAdditionalReducer();
-
       const store = createStore(finalReducer, preloadedState);
-      store.addReducer(combineReducers({letter}));
+      store.addReducer(combineReducers({letter: letter.reducer}));
       expect(store.getState()).toEqual(preloadedState);
 
-      store.dispatch({type: 'LETTER_ADD', payload: 'z'});
+      store.dispatch(letter.add('z'));
       expect(store.getState()).toEqual({
         counter: 10,
         calculator: 50,
@@ -208,17 +199,15 @@ describe('Function "createStore" creates a store that', () => {
       const store = createStore(finalReducer, preloadedState);
       expect(store.getState()).toEqual(preloadedState);
 
-      const letter = createAdditionalReducer();
-
       const reducer = combineReducers({
         number: finalReducer,
-        letter
+        letter: letter.reducer
       });
 
       store.replaceReducer(reducer, nextPreloadedState);
       expect(store.getState()).toEqual(nextPreloadedState);
 
-      store.dispatch({type: 'COUNTER_DECREASE'});
+      store.dispatch(counter.decrease());
 
       expect(store.getState()).toEqual({
         number: {
@@ -253,7 +242,7 @@ describe('Function "createStore" creates a store that', () => {
       };
 
       const store = createStore(finalReducer, preloadedState, enhancer);
-      const action = {type: 'COUNTER_INCREASE'};
+      const action = counter.increase();
       store.dispatch(action);
 
       expect(store.dispatch).toBeCalledWith(action);
@@ -276,7 +265,7 @@ describe('Function "createStore" creates a store that', () => {
       };
 
       const store = createStore(finalReducer, enhancer);
-      const action = {type: 'COUNTER_INCREASE'};
+      const action = counter.increase();
       store.dispatch(action);
 
       expect(store.dispatch).toBeCalledWith(action);

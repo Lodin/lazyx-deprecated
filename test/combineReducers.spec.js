@@ -1,34 +1,26 @@
 import {Observable} from 'rxjs/Observable';
 import combineReducers from '../src/combineReducers';
-import {createReducers} from './helpers';
+import {counter, calculator} from './helpers';
 
 describe('Function "combineReducers"', () => {
-  let counter;
-  let calculator;
-  let counterActions;
-
   const startSendingEvents = (actionCollection) => {
-    for (const action of counterActions) {
+    for (const action of counter.actions) {
       actionCollection.get(action).next({type: action});
     }
 
-    const calcPlus = {type: 'CALCULATOR_PLUS', payload: 10};
-    const calcMinus = {type: 'CALCULATOR_MINUS', payload: 5};
-    const calcReset = {type: 'CALCULATOR_RESET'};
+    const calcPlus = calculator.plus(10);
+    const calcMinus = calculator.minus(5);
+    const calcReset = calculator.reset();
 
     actionCollection.get(calcPlus.type).next(calcPlus);
     actionCollection.get(calcMinus.type).next(calcMinus);
     actionCollection.get(calcReset.type).next(calcReset);
   };
 
-  beforeEach(() => {
-    [counter, counterActions, calculator] = createReducers();
-  });
-
   it('should create a high-level reducer to consume received reducers', (done) => {
     const product = combineReducers({
-      counter,
-      calculator
+      counter: counter.reducer,
+      calculator: calculator.reducer
     });
 
     const productData = product();
@@ -37,8 +29,8 @@ describe('Function "combineReducers"', () => {
     const [reducer$, actionCollection, reducerCollection] = productData;
 
     expect(Array.from(reducerCollection.entries())).toEqual([
-      [counter, expect.any(Observable)],
-      [calculator, expect.any(Observable)]
+      [counter.reducer, expect.any(Observable)],
+      [calculator.reducer, expect.any(Observable)]
     ]);
 
     let subscriptionCounter = 0;
@@ -99,8 +91,8 @@ describe('Function "combineReducers"', () => {
 
   it('should allow to set preloaded state for all reducers', (done) => {
     const product = combineReducers({
-      counter,
-      calculator
+      counter: counter.reducer,
+      calculator: calculator.reducer
     });
 
     const preloadedState = {
@@ -171,10 +163,10 @@ describe('Function "combineReducers"', () => {
   it('should consume products of lower-level "combineReducer" functions', (done) => {
     const product = combineReducers({
       counterTop: combineReducers({
-        counter
+        counter: counter.reducer
       }),
       calculatorTop: combineReducers({
-        calculator
+        calculator: calculator.reducer
       })
     });
 
@@ -200,10 +192,10 @@ describe('Function "combineReducers"', () => {
   it('should allow to set preloaded state for all reducer tree', (done) => {
     const product = combineReducers({
       counterTop: combineReducers({
-        counter
+        counter: counter.reducer
       }),
       calculatorTop: combineReducers({
-        calculator
+        calculator: calculator.reducer
       })
     });
 
