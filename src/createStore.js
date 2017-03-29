@@ -27,14 +27,15 @@ export default function createStore(reducer, preloadedState, enhancer) {
 
   let currentState = preloadedState;
 
-  // eslint-disable-next-line prefer-const
-  let [reducer$, actionCollection, reducerCollection] = reducer(currentState);
+  const [reducer$, actionCollection, reducerCollection] = reducer(currentState);
+
+  let currentReducer$ = reducer$;
 
   const updateCurrentState = (state) => {
     currentState = currentState ? Object.assign(currentState, state) : state;
   };
 
-  let subscription = reducer$.subscribe(updateCurrentState);
+  let updateSubscription = currentReducer$.subscribe(updateCurrentState);
 
   function getState() {
     return currentState;
@@ -74,28 +75,32 @@ export default function createStore(reducer, preloadedState, enhancer) {
       throw new Error('Expected wanted reducer to be a function.');
     }
 
+    if (!hasAssociatedActions(wantedReducer)) {
+      throw new Error('Expected wanted reducer to be associated with it\'s actions');
+    }
+
     return reducerCollection.get(wantedReducer);
   }
 
   function addReducer(nextReducer) {
     const [nextReducer$, nextActionMap] = nextReducer(currentState);
 
-    reducer$ = Observable::combineLatest(
-      reducer$,
+    currentReducer$ = Observable::combineLatest(
+      currentReducer$,
       nextReducer$,
       (originalState, nextState) => Object.assign(originalState, nextState)
     );
 
-    subscription.unsubscribe();
-    subscription = reducer$.subscribe(updateCurrentState);
+    updateSubscription.unsubscribe();
+    updateSubscription = currentReducer$.subscribe(updateCurrentState);
 
-    for (const [action, reducerAndActor$] of nextActionMap) {
-      actionCollection.set(action, reducerAndActor$);
+    for (const item of nextActionMap) {
+      actionCollection.set(...item);
     }
   }
 
   function subscribe(listener) {
-    return reducer$.subscribe(listener);
+    return currentReducer$.subscribe(listener);
   }
 
   return {

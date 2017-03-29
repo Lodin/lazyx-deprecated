@@ -260,9 +260,18 @@ describe('Function "createStore" creates a store', () => {
         .toThrow(/Expected wanted reducer to be a function/);
     });
 
+    it('should throw an error if reducer to search a stream is not associated with actions',
+      () => {
+        const fake = () => {};
+        const store = createStore(finalReducer);
+        expect(() => store.getReducerStream(fake))
+          .toThrow(/Expected wanted reducer to be associated with it's actions/);
+      });
+
     it('should throw an error if reducer is not a product of "combineReducer" function', () => {
       expect(() => createStore(calculator.reducer))
         .toThrow(/Expected the reducer to be a product of "combineReducer" function/);
     });
+
   });
 });
