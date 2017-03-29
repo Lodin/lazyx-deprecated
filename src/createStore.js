@@ -1,6 +1,7 @@
 import isPlainObject from 'lodash.isplainobject';
 import {Observable} from 'rxjs/Observable';
 import {combineLatest} from 'rxjs/observable/combineLatest';
+import {hasAssociatedActions} from './associatedActions';
 
 export default function createStore(reducer, preloadedState, enhancer) {
   if (typeof preloadedState === 'function' && typeof enhancer === 'undefined') {
@@ -18,6 +19,10 @@ export default function createStore(reducer, preloadedState, enhancer) {
 
   if (typeof reducer !== 'function') {
     throw new Error('Expected the reducer to be a function.');
+  }
+
+  if (hasAssociatedActions(reducer)) {
+    throw new Error('Expected the reducer to be a product of "combineReducer" function');
   }
 
   let currentState = preloadedState;

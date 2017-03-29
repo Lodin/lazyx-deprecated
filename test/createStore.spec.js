@@ -1,6 +1,5 @@
 import {skip} from 'rxjs/operator/skip';
-import createStore from '../src/createStore';
-import combineReducers from '../src/combineReducers';
+import {createStore, combineReducers} from '../src';
 import {counter, calculator, letter} from './helpers/reducers';
 
 describe('Function "createStore" creates a store', () => {
@@ -101,34 +100,32 @@ describe('Function "createStore" creates a store', () => {
       store.dispatch(counter.decrease());
     });
 
-    describe('manipulating reducers', () => {
-      it('should be able to add a reducer', () => {
-        store.addReducer(combineReducers({
-          letter: letter.reducer
-        }));
+    it('should be able to add a reducer', () => {
+      store.addReducer(combineReducers({
+        letter: letter.reducer
+      }));
 
-        expect(store.getState()).toEqual({
-          counter: 0,
-          calculator: 0,
-          letter: 'foo'
-        });
+      expect(store.getState()).toEqual({
+        counter: 0,
+        calculator: 0,
+        letter: 'foo'
+      });
+    });
+
+    it('should be able to replace current reducer to a new one', () => {
+      const reducer = combineReducers({
+        number: finalReducer,
+        letter: letter.reducer
       });
 
-      it('should be able to replace current reducer to a new one', () => {
-        const reducer = combineReducers({
-          number: finalReducer,
-          letter: letter.reducer
-        });
+      store.replaceReducer(reducer);
 
-        store.replaceReducer(reducer);
-
-        expect(store.getState()).toEqual({
-          number: {
-            counter: 0,
-            calculator: 0
-          },
-          letter: 'foo'
-        });
+      expect(store.getState()).toEqual({
+        number: {
+          counter: 0,
+          calculator: 0
+        },
+        letter: 'foo'
       });
     });
   });
@@ -245,7 +242,7 @@ describe('Function "createStore" creates a store', () => {
       const action = counter.increase();
       store.dispatch(action);
 
-      expect(store.dispatch).toBeCalledWith(action);
+      expect(store.dispatch).toHaveBeenCalledWith(action);
       expect(store.getState()).toEqual({
         counter: 11,
         calculator: 50
@@ -268,7 +265,7 @@ describe('Function "createStore" creates a store', () => {
       const action = counter.increase();
       store.dispatch(action);
 
-      expect(store.dispatch).toBeCalledWith(action);
+      expect(store.dispatch).toHaveBeenCalledWith(action);
       expect(store.getState()).toEqual({
         counter: 1,
         calculator: 0
@@ -314,6 +311,11 @@ describe('Function "createStore" creates a store', () => {
       const store = createStore(finalReducer);
       expect(() => store.getReducerStream({}))
         .toThrow(/Expected wanted reducer to be a function/);
+    });
+
+    it('should throw an error if reducer is not a product of "combineReducer" function', () => {
+      expect(() => createStore(calculator.reducer))
+        .toThrow(/Expected the reducer to be a product of "combineReducer" function/);
     });
   });
 });
