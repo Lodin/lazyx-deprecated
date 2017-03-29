@@ -272,6 +272,5 @@ describe('Function "createStore" creates a store', () => {
       expect(() => createStore(calculator.reducer))
         .toThrow(/Expected the reducer to be a product of "combineReducer" function/);
     });
-
   });
 });
