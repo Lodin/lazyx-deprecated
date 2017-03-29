@@ -9,7 +9,8 @@
   "scripts": {
     "clean": "rimraf lib dist es coverage",
     "lint": "eslint src test build",
-    "test": "cross-env BABEL_ENV=commonjs jest",
+    "check-es3": "check-es3-syntax lib/ dist/ --kill --print",
+    "test": "cross-env BABEL_ENV=es jest",
     "test:watch": "npm test -- --watch",
     "test:cov": "npm test -- --coverage",
     "build:commonjs": "cross-env BABEL_ENV=commonjs babel src --out-dir lib",
@@ -17,7 +18,7 @@
     "build:umd": "cross-env BABEL_ENV=commonjs NODE_ENV=development webpack src/index.js dist/lazyx.js",
     "build:umd:min": "cross-env BABEL_ENV=commonjs NODE_ENV=production webpack src/index.js dist/lazyx.min.js",
     "build": "npm run build:commonjs && npm run build:es && npm run build:umd && npm run build:umd:min",
-    "prepublish": "npm run clean && npm run lint && npm test && npm run build && check-es3-syntax lib/ dist/ --kill --print"
+    "prepublish": "npm run clean && npm run lint && npm test && npm run build && npm run check-es3"
   },
   "repository": {
     "type": "git",
@@ -79,6 +80,7 @@
     "babel-plugin-transform-es3-property-literals": "^6.22.0",
     "babel-plugin-transform-function-bind": "^6.22.0",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "check-es3-syntax-cli": "^0.2.0",
     "codecov": "^2.1.0",
     "cross-env": "^3.2.4",
     "eslint": "^3.18.0",
