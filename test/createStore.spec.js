@@ -111,23 +111,6 @@ describe('Function "createStore" creates a store', () => {
         letter: 'foo'
       });
     });
-
-    it('should be able to replace current reducer to a new one', () => {
-      const reducer = combineReducers({
-        number: finalReducer,
-        letter: letter.reducer
-      });
-
-      store.replaceReducer(reducer);
-
-      expect(store.getState()).toEqual({
-        number: {
-          counter: 0,
-          calculator: 0
-        },
-        letter: 'foo'
-      });
-    });
   });
 
   describe('working with preloaded state', () => {
@@ -176,42 +159,6 @@ describe('Function "createStore" creates a store', () => {
         counter: 10,
         calculator: 50,
         letter: 'barz'
-      });
-    });
-
-    it('should set the next preloaded state on reducer replacing', () => {
-      const preloadedState = {
-        counter: 10,
-        calculator: 50
-      };
-
-      const nextPreloadedState = {
-        number: {
-          counter: 20,
-          calculator: 100
-        },
-        letter: 'baz'
-      };
-
-      const store = createStore(finalReducer, preloadedState);
-      expect(store.getState()).toEqual(preloadedState);
-
-      const reducer = combineReducers({
-        number: finalReducer,
-        letter: letter.reducer
-      });
-
-      store.replaceReducer(reducer, nextPreloadedState);
-      expect(store.getState()).toEqual(nextPreloadedState);
-
-      store.dispatch(counter.decrease());
-
-      expect(store.getState()).toEqual({
-        number: {
-          counter: 19,
-          calculator: 100
-        },
-        letter: 'baz'
       });
     });
   });

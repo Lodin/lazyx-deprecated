@@ -92,19 +92,6 @@ export default function createStore(reducer, preloadedState, enhancer) {
     }
   }
 
-  function replaceReducer(nextReducer, nextPreloadedState = {}) {
-    currentState = nextPreloadedState;
-
-    const [nextReducer$, nextActionCollection, nextReducerCollection] = nextReducer(currentState);
-
-    reducer$ = nextReducer$;
-    subscription.unsubscribe();
-    subscription = reducer$.subscribe(updateCurrentState);
-
-    actionCollection = nextActionCollection;
-    reducerCollection = nextReducerCollection;
-  }
-
   function subscribe(listener) {
     return reducer$.subscribe(listener);
   }
@@ -114,7 +101,6 @@ export default function createStore(reducer, preloadedState, enhancer) {
     dispatch,
     getState,
     getReducerStream,
-    replaceReducer,
     subscribe
   };
 }
