@@ -20,6 +20,7 @@
     "build": "npm run build:commonjs && npm run build:es && npm run build:umd && npm run build:umd:min",
     "prepublish": "npm run clean && npm run lint && npm test && npm run build && npm run check-es3"
   },
+  "pre-commit": ["lint"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Lodin/lazyx.git"
@@ -88,6 +89,7 @@
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^6.10.3",
     "jest": "^19.0.2",
+    "pre-commit": "^1.2.2",
     "webpack": "^2.3.2"
   },
   "jest": {
