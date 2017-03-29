@@ -10,7 +10,7 @@
     "clean": "rimraf lib dist es coverage",
     "lint": "eslint src test build",
     "check-es3": "check-es3-syntax lib/ dist/ --kill --print",
-    "test": "cross-env BABEL_ENV=es jest",
+    "test": "cross-env BABEL_ENV=test jest",
     "test:watch": "npm test -- --watch",
     "test:cov": "npm test -- --coverage",
     "build:commonjs": "cross-env BABEL_ENV=commonjs babel src --out-dir lib",
@@ -48,7 +48,6 @@
   "dependencies": {
     "lodash": "^4.17.4",
     "lodash-es": "^4.17.4",
-    "lodash.isplainobject": "^4.0.6",
     "rxjs": "^5.2.0"
   },
   "devDependencies": {
