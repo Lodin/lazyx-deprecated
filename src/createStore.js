@@ -28,7 +28,9 @@ export default function createStore(reducer, preloadedState, enhancer) {
   let currentState = preloadedState;
   let [reducer$, actionCollection, reducerCollection] = reducer(currentState);
 
-  const updateCurrentState = state => (currentState = {...currentState, ...state});
+  const updateCurrentState = (state) => {
+    currentState = currentState ? Object.assign(currentState, state) : state;
+  };
 
   let subscription = reducer$.subscribe(updateCurrentState);
 
@@ -55,6 +57,8 @@ export default function createStore(reducer, preloadedState, enhancer) {
       const actor$ = actionCollection.get(action.type);
       actor$.next(action);
     } else {
+      // If the action is undefined whole store will be refreshed and all subscribers will receive
+      // this action and return their current state
       for (const actor$ of new Set(actionCollection.values())) {
         actor$.next(action);
       }
@@ -77,7 +81,7 @@ export default function createStore(reducer, preloadedState, enhancer) {
     reducer$ = Observable::combineLatest(
       reducer$,
       nextReducer$,
-      (...states) => Object.assign({}, ...states)
+      (originalState, nextState) => Object.assign(originalState, nextState)
     );
 
     subscription.unsubscribe();
