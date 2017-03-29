@@ -1,7 +1,7 @@
 {
   "name": "lazyx",
   "version": "0.1.0",
-  "description": "Predictable state container with Redux API built on top of RxJS",
+  "description": "Redux made in the fully reactive way",
   "main": "build/index.js",
   "scripts": {
     "build": "babel src --out-dir build",
