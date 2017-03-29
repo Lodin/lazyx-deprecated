@@ -7,6 +7,6 @@ cache:
   directories:
   - $HOME/.npm
 before_install: npm -g install npm@latest
-script: npm test
+script: npm run test:cov
 after_success:
   - cat coverage/lcov.info | ./node_modules/.bin/codecov
