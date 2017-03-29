@@ -1,4 +1,4 @@
-import isPlainObject from 'lodash.isplainobject';
+import isPlainObject from 'lodash/isPlainObject';
 import {Observable} from 'rxjs/Observable';
 import {combineLatest} from 'rxjs/observable/combineLatest';
 import {hasAssociatedActions} from './associatedActions';
@@ -26,6 +26,8 @@ export default function createStore(reducer, preloadedState, enhancer) {
   }
 
   let currentState = preloadedState;
+
+  // eslint-disable-next-line prefer-const
   let [reducer$, actionCollection, reducerCollection] = reducer(currentState);
 
   const updateCurrentState = (state) => {

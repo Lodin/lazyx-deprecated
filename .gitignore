@@ -2,7 +2,9 @@
 .idea
 
 # distributive
-build
+dist
+lib
+es
 
 # libraries
 node_modules
@@ -11,4 +13,4 @@ node_modules
 coverage
 
 # logging
-npm-debug.log*
+*.log*

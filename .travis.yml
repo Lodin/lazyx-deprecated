@@ -1,0 +1,12 @@
+language: node_js
+dist: trusty
+sudo: false
+node_js:
+  - 'node'
+cache:
+  directories:
+  - $HOME/.npm
+before_install: npm -g install npm@latest
+script: npm test -- --timeout 15000
+after_success:
+  - cat coverage/lcov.info | ./node_modules/.bin/codecov

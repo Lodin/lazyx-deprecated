@@ -2,14 +2,22 @@
   "name": "lazyx",
   "version": "0.1.0",
   "description": "Redux made in the fully reactive way",
-  "main": "build/index.js",
+  "browser": "dist/lazyx.js",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "jsnext:main": "es/index.js",
   "scripts": {
-    "build": "babel src --out-dir build",
-    "lint": "eslint src -c .eslintrc",
-    "prepublish": "npm run build",
-    "test": "npm run test:watch",
-    "test:watch": "npm run test:single -- --watch",
-    "test:single": "cross-env BABEL_ENV=test jest"
+    "clean": "rimraf lib dist es coverage",
+    "lint": "eslint src test build",
+    "test": "cross-env BABEL_ENV=commonjs jest",
+    "test:watch": "npm test -- --watch",
+    "test:cov": "npm test -- --coverage",
+    "build:commonjs": "cross-env BABEL_ENV=commonjs babel src --out-dir lib",
+    "build:es": "cross-env BABEL_ENV=es babel src --out-dir es",
+    "build:umd": "cross-env BABEL_ENV=commonjs NODE_ENV=development webpack src/index.js dist/lazyx.js",
+    "build:umd:min": "cross-env BABEL_ENV=commonjs NODE_ENV=production webpack src/index.js dist/lazyx.min.js",
+    "build": "npm run build:commonjs && npm run build:es && npm run build:umd && npm run build:umd:min",
+    "prepublish": "npm run clean && npm run lint && npm test && npm run build && check-es3-syntax lib/ dist/ --kill --print"
   },
   "repository": {
     "type": "git",
@@ -30,13 +38,15 @@
     "reactive",
     "redux"
   ],
-  "author": "Vlad Rindevich <rindevich.vs@gmail.com>",
+  "author": "Vlad Rindevich <rindevich.vs@gmail.com> (https://github.com/Lodin)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Lodin/lazyx/issues"
   },
   "homepage": "https://github.com/Lodin/lazyx#readme",
   "dependencies": {
+    "lodash": "^4.17.4",
+    "lodash-es": "^4.17.4",
     "lodash.isplainobject": "^4.0.6",
     "rxjs": "^5.2.0"
   },
@@ -45,22 +55,43 @@
     "babel-core": "^6.24.0",
     "babel-eslint": "^7.2.1",
     "babel-jest": "^19.0.0",
+    "babel-loader": "^6.4.1",
+    "babel-plugin-check-es2015-constants": "^6.22.0",
     "babel-plugin-transform-class-properties": "^6.23.0",
+    "babel-plugin-transform-es2015-arrow-functions": "^6.22.0",
+    "babel-plugin-transform-es2015-block-scoped-functions": "^6.22.0",
+    "babel-plugin-transform-es2015-block-scoping": "^6.23.0",
+    "babel-plugin-transform-es2015-classes": "^6.23.0",
+    "babel-plugin-transform-es2015-computed-properties": "^6.22.0",
+    "babel-plugin-transform-es2015-destructuring": "^6.23.0",
+    "babel-plugin-transform-es2015-for-of": "^6.23.0",
+    "babel-plugin-transform-es2015-function-name": "^6.22.0",
+    "babel-plugin-transform-es2015-literals": "^6.22.0",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.24.0",
+    "babel-plugin-transform-es2015-object-super": "^6.22.0",
+    "babel-plugin-transform-es2015-parameters": "^6.23.0",
+    "babel-plugin-transform-es2015-shorthand-properties": "^6.22.0",
+    "babel-plugin-transform-es2015-spread": "^6.22.0",
+    "babel-plugin-transform-es2015-sticky-regex": "^6.22.0",
+    "babel-plugin-transform-es2015-template-literals": "^6.22.0",
+    "babel-plugin-transform-es2015-unicode-regex": "^6.22.0",
+    "babel-plugin-transform-es3-member-expression-literals": "^6.22.0",
+    "babel-plugin-transform-es3-property-literals": "^6.22.0",
     "babel-plugin-transform-function-bind": "^6.22.0",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "codecov": "^2.1.0",
     "cross-env": "^3.2.4",
     "eslint": "^3.18.0",
     "eslint-config-airbnb": "^14.1.0",
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^6.10.3",
-    "jest": "^19.0.2"
+    "jest": "^19.0.2",
+    "webpack": "^2.3.2"
   },
   "jest": {
-    "collectCoverage": true,
     "collectCoverageFrom": [
-      "src/**/*.{js,jsx}"
+      "src/**/*.js"
     ],
     "coverageReporters": [
       "html",
@@ -72,7 +103,6 @@
     ],
     "testRegex": "(/tests/.*|(\\.|/)(test|spec))\\.jsx?$",
     "testEnvironment": "node",
-    "testURL": "http://localhost",
     "transform": {
       "^.+\\.(js|jsx)$": "<rootDir>/node_modules/babel-jest"
     },
