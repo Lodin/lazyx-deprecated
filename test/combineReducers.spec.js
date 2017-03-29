@@ -1,5 +1,5 @@
 import {Observable} from 'rxjs/Observable';
-import combineReducers from '../src/combineReducers';
+import {combineReducers} from '../src';
 import {counter, calculator} from './helpers/reducers';
 
 describe('Function "combineReducers"', () => {

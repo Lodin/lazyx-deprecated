@@ -62,6 +62,17 @@ const letterReducer = associateActions((state = 'foo', action) => {
 const addLetter = payload => ({type: ADD_LETTER, payload});
 const removeLetter = () => ({type: REMOVE_LETTER});
 
+const plusCalculatorAsync = payload => dispatch => new Promise(resolve => setImmediate(() => {
+  dispatch(plusCalculator(payload));
+  resolve();
+}));
+
+const plusCalculatorIfZero = payload => (dispatch, getState) => {
+  if (getState().calculator === 0) {
+    dispatch(plusCalculator(payload));
+  }
+};
+
 export const counter = {
   actions: counterActions,
   reducer: counterReducer,
@@ -83,4 +94,9 @@ export const letter = {
   reducer: letterReducer,
   add: addLetter,
   remove: removeLetter
+};
+
+export const special = {
+  plusCalculatorAsync,
+  plusCalculatorIfZero
 };
