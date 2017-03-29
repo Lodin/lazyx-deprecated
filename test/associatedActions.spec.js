@@ -5,24 +5,16 @@ import {
 } from '../src/associatedActions';
 
 describe('Function "associateActions"', () => {
-  const getSymbol = reducer => Reflect.ownKeys(reducer).filter(key => typeof key === 'symbol')[0];
-
   it('should associate action list with reducer', () => {
     const actions = ['TEST_ACTION1', 'TEST_ACTION2'];
     const reducer = associateActions(state => state, actions);
-
-    const symbol = getSymbol(reducer);
-
-    expect(reducer[symbol]).toEqual(actions);
+    expect(reducer.associatedActions).toEqual(actions);
   });
 
   it('should allow to use single action instead of array', () => {
     const action = 'TEST_ACTION';
     const reducer = associateActions(state => state, action);
-
-    const symbol = getSymbol(reducer);
-
-    expect(reducer[symbol]).toEqual([action]);
+    expect(reducer.associatedActions).toEqual([action]);
   });
 });
 

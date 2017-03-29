@@ -1,14 +1,12 @@
-const symbol = Symbol('associatedActions');
-
 export function associateActions(reducer, actions) {
-  reducer[symbol] = Array.isArray(actions) ? actions : [actions];
+  reducer.associatedActions = Array.isArray(actions) ? actions : [actions];
   return reducer;
 }
 
 export function hasAssociatedActions(reducer) {
-  return typeof reducer[symbol] !== 'undefined';
+  return typeof reducer.associatedActions !== 'undefined';
 }
 
 export function getAssociatedActions(reducer) {
-  return reducer[symbol];
+  return reducer.associatedActions;
 }
