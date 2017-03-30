@@ -98,7 +98,8 @@ export default function createStore(reducer, preloadedState, enhancer) {
   }
 
   function subscribe(listener) {
-    return currentReducer$.subscribe(listener);
+    const subscription = currentReducer$.subscribe(listener);
+    return ::subscription.unsubscribe;
   }
 
   return {
