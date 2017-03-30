@@ -9,7 +9,6 @@ import {getAssociatedActions, hasAssociatedActions} from './associatedActions';
 
 export default function combineReducers(reducerMap) {
   return (preloadedState) => {
-    const currentState = {};
     const reducerKeys = Object.keys(reducerMap);
     const actionCollection = new Map();
     const reducerCollection = new Map();
@@ -66,11 +65,13 @@ export default function combineReducers(reducerMap) {
     const reducer$ = Observable::combineLatest(
       ...reducers,
       (...states) => {
+        const state = {};
+
         for (let i = 0, len = states.length; i < len; i += 1) {
-          currentState[reducerKeys[i]] = states[i];
+          state[reducerKeys[i]] = states[i];
         }
 
-        return currentState;
+        return state;
       }
     );
 

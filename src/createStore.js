@@ -31,9 +31,7 @@ export default function createStore(reducer, preloadedState, enhancer) {
 
   let currentReducer$ = reducer$;
 
-  const updateCurrentState = (state) => {
-    currentState = currentState ? Object.assign(currentState, state) : state;
-  };
+  const updateCurrentState = state => (currentState = {...currentState, ...state});
 
   let updateSubscription = currentReducer$.subscribe(updateCurrentState);
 
@@ -88,7 +86,7 @@ export default function createStore(reducer, preloadedState, enhancer) {
     currentReducer$ = Observable::combineLatest(
       currentReducer$,
       nextReducer$,
-      (originalState, nextState) => Object.assign(originalState, nextState)
+      (originalState, nextState) => ({...originalState, ...nextState})
     );
 
     updateSubscription.unsubscribe();
