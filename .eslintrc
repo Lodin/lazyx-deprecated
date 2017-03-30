@@ -11,6 +11,7 @@
     "no-iterator": 0,
     "no-param-reassign": 0,
     "no-restricted-syntax": 0,
+    "no-underscore-dangle": 0,
     "object-curly-spacing": ["error", "never"]
   }
 }
