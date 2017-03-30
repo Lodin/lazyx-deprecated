@@ -21,7 +21,7 @@ export default function createStore(reducer, preloadedState, enhancer) {
     throw new Error('Expected the reducer to be a function.');
   }
 
-  if (hasAssociatedActions(reducer)) {
+  if (!reducer.isCombinedReducer) {
     throw new Error('Expected the reducer to be a product of "combineReducer" function');
   }
 

@@ -8,7 +8,7 @@ import {scan} from 'rxjs/operator/scan';
 import {getAssociatedActions, hasAssociatedActions} from './associatedActions';
 
 export default function combineReducers(reducerMap) {
-  return (preloadedState) => {
+  const combination = (preloadedState) => {
     const reducerKeys = Object.keys(reducerMap);
     const actionCollection = new Map();
     const reducerCollection = new Map();
@@ -77,4 +77,8 @@ export default function combineReducers(reducerMap) {
 
     return [reducer$, actionCollection, reducerCollection];
   };
+
+  combination.isCombinedReducer = true;
+
+  return combination;
 }
