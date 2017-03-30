@@ -5,7 +5,6 @@ import {combineLatest} from 'rxjs/observable/combineLatest';
 import {map} from 'rxjs/operator/map';
 import {merge} from 'rxjs/operator/merge';
 import {scan} from 'rxjs/operator/scan';
-import {getAssociatedActions, hasAssociatedActions} from './associatedActions';
 
 export default function combineReducers(reducerMap) {
   const combination = (preloadedState) => {
@@ -22,8 +21,8 @@ export default function combineReducers(reducerMap) {
         throw new Error('Expected reducer to be a function.');
       }
 
-      if (hasAssociatedActions(reducer)) {
-        const actions = getAssociatedActions(reducer);
+      if (typeof reducer.associatedActions !== 'undefined') {
+        const actions = reducer.associatedActions;
 
         const actor$ = new Subject();
 

@@ -1,7 +1,6 @@
 import isPlainObject from 'lodash/isPlainObject';
 import {Observable} from 'rxjs/Observable';
 import {combineLatest} from 'rxjs/observable/combineLatest';
-import {hasAssociatedActions} from './associatedActions';
 
 export default function createStore(reducer, preloadedState, enhancer) {
   if (typeof preloadedState === 'function' && typeof enhancer === 'undefined') {
@@ -73,7 +72,7 @@ export default function createStore(reducer, preloadedState, enhancer) {
       throw new Error('Expected wanted reducer to be a function.');
     }
 
-    if (!hasAssociatedActions(wantedReducer)) {
+    if (typeof wantedReducer.associatedActions === 'undefined') {
       throw new Error('Expected wanted reducer to be associated with it\'s actions');
     }
 
