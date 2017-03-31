@@ -20,7 +20,9 @@
     "build": "npm run build:commonjs && npm run build:es && npm run build:umd && npm run build:umd:min",
     "prepublish": "npm run clean && npm run lint && npm test && npm run build && npm run check-es3"
   },
-  "pre-commit": ["lint"],
+  "pre-commit": [
+    "lint"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Lodin/lazyx.git"
@@ -82,12 +84,13 @@
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "check-es3-syntax-cli": "^0.2.0",
     "codecov": "^2.1.0",
-    "cross-env": "^3.2.4",
+    "cross-env": "^4.0.0",
     "eslint": "^3.18.0",
-    "eslint-config-airbnb": "^14.1.0",
+    "eslint-config-standard": "^7.1.0",
     "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-jsx-a11y": "^4.0.0",
-    "eslint-plugin-react": "^6.10.3",
+    "eslint-plugin-node": "^4.2.2",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^2.1.1",
     "jest": "^19.0.2",
     "pre-commit": "^1.2.2",
     "webpack": "^2.3.2"

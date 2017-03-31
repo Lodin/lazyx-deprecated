@@ -1,104 +1,104 @@
-import isPlainObject from 'lodash/isPlainObject';
-import {Observable} from 'rxjs/Observable';
-import {combineLatest} from 'rxjs/observable/combineLatest';
+import isPlainObject from 'lodash/isPlainObject'
+import {Observable} from 'rxjs/Observable'
+import {combineLatest} from 'rxjs/observable/combineLatest'
 
-export default function createStore(reducer, preloadedState, enhancer) {
+export default function createStore (reducer, preloadedState, enhancer) {
   if (typeof preloadedState === 'function' && typeof enhancer === 'undefined') {
-    enhancer = preloadedState;
-    preloadedState = undefined;
+    enhancer = preloadedState
+    preloadedState = undefined
   }
 
   if (typeof enhancer !== 'undefined') {
     if (typeof enhancer !== 'function') {
-      throw new Error('Expected the enhancer to be a function.');
+      throw new Error('Expected the enhancer to be a function.')
     }
 
-    return enhancer(createStore)(reducer, preloadedState);
+    return enhancer(createStore)(reducer, preloadedState)
   }
 
   if (typeof reducer !== 'function') {
-    throw new Error('Expected the reducer to be a function.');
+    throw new Error('Expected the reducer to be a function.')
   }
 
   if (!reducer.isCombinedReducer) {
-    throw new Error('Expected the reducer to be a product of "combineReducer" function');
+    throw new Error('Expected the reducer to be a product of "combineReducer" function')
   }
 
-  let currentState = preloadedState;
+  let currentState = preloadedState
 
-  const [reducer$, actionCollection, reducerCollection] = reducer(currentState);
+  const [reducer$, actionCollection, reducerCollection] = reducer(currentState)
 
-  let currentReducer$ = reducer$;
+  let currentReducer$ = reducer$
 
-  const updateCurrentState = state => (currentState = {...currentState, ...state});
+  const updateCurrentState = state => (currentState = {...currentState, ...state})
 
-  let updateSubscription = currentReducer$.subscribe(updateCurrentState);
+  let updateSubscription = currentReducer$.subscribe(updateCurrentState)
 
-  function getState() {
-    return currentState;
+  function getState () {
+    return currentState
   }
 
-  function dispatch(action) {
+  function dispatch (action) {
     if (!isPlainObject(action)) {
       throw new Error(
         'Actions must be plain objects. ' +
         'Use custom middleware for async actions.'
-      );
+      )
     }
 
     if (typeof action.type === 'undefined') {
       throw new Error(
         'Actions may not have an undefined "type" property. ' +
         'Have you misspelled a constant?'
-      );
+      )
     }
 
     if (actionCollection.has(action.type)) {
-      const actor$ = actionCollection.get(action.type);
-      actor$.next(action);
+      const actor$ = actionCollection.get(action.type)
+      actor$.next(action)
     } else {
       // If the action is undefined whole store will be refreshed and all subscribers will receive
       // this action and return their current state
       for (const actor$ of new Set(actionCollection.values())) {
-        actor$.next(action);
+        actor$.next(action)
       }
     }
 
-    return action;
+    return action
   }
 
-  function getReducerStream(wantedReducer) {
+  function getReducerStream (wantedReducer) {
     if (typeof wantedReducer !== 'function') {
-      throw new Error('Expected wanted reducer to be a function.');
+      throw new Error('Expected wanted reducer to be a function.')
     }
 
     if (typeof wantedReducer.associatedActions === 'undefined') {
-      throw new Error('Expected wanted reducer to be associated with it\'s actions');
+      throw new Error('Expected wanted reducer to be associated with it\'s actions')
     }
 
-    return reducerCollection.get(wantedReducer);
+    return reducerCollection.get(wantedReducer)
   }
 
-  function addReducer(nextReducer) {
-    const [nextReducer$, nextActionMap] = nextReducer(currentState);
+  function addReducer (nextReducer) {
+    const [nextReducer$, nextActionMap] = nextReducer(currentState)
 
     currentReducer$ = Observable::combineLatest(
       currentReducer$,
       nextReducer$,
       (originalState, nextState) => ({...originalState, ...nextState})
-    );
+    )
 
-    updateSubscription.unsubscribe();
-    updateSubscription = currentReducer$.subscribe(updateCurrentState);
+    updateSubscription.unsubscribe()
+    updateSubscription = currentReducer$.subscribe(updateCurrentState)
 
     for (const item of nextActionMap) {
-      actionCollection.set(...item);
+      actionCollection.set(...item)
     }
   }
 
-  function subscribe(listener) {
-    const subscription = currentReducer$.subscribe(listener);
-    return ::subscription.unsubscribe;
+  function subscribe (listener) {
+    const subscription = currentReducer$.subscribe(listener)
+    return ::subscription.unsubscribe
   }
 
   return {
@@ -107,5 +107,5 @@ export default function createStore(reducer, preloadedState, enhancer) {
     getState,
     getReducerStream,
     subscribe
-  };
+  }
 }
